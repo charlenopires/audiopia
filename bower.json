@@ -1,0 +1,10 @@
+{
+  "name": "audiopia",
+  "version": "0.0.1",
+  "authors": [
+    "Mario Flach <info@almightycouch.org>"
+  ],
+  "dependencies": {
+    "musicmetadata": "~0.6.0"
+  }
+}

@@ -1,0 +1,8 @@
+<template name="home">
+    <input type="file" webkitdirectory>
+    <ul>
+        {{#each music}}
+        <li>{{title}} - {{artist}}</li>
+        {{/each}}
+    </ul>
+</template>
