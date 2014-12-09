@@ -1,3 +1,5 @@
+var audio = new Audio();
+
 Template.home.helpers({
     music: function() {
         return Music.find();
@@ -37,18 +39,21 @@ Template.home.events({
     },
     'click ul li': function(event, template) {
         var song = this;
-        var blob = MusicData.findOne({ _id: song._id});
-        if(!blob) {
+        var data = MusicData.findOne({ _id: song._id});
+        if(!data) {
             var conn = WebRTC.connect(song.owner, {metadata: {song: song._id}});
             conn.on('open', function() {
                 conn.on('data', function(data) {
                     var blob = new Blob([data], {
                         type: song.mime
                     });
-                    var a = new Audio(URL.createObjectURL(blob));
-                    a.play();
+                    audio.src = URL.createObjectURL(blob);
+                    audio.play();
                 });
             });
+        } else {
+            audio.src = data.url;
+            audio.play();
         }
     }
 });
