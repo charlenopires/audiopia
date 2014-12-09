@@ -1,4 +1,5 @@
 var audio = new Audio();
+audio.play();
 
 Template.home.helpers({
     music: function() {
@@ -12,28 +13,7 @@ Template.home.events({
         for(var i in files) {
             var file = files[i];
             try {
-                (function(file) {
-                    var meta = musicmetadata(file); // throws if invalid file
-                    meta.on('metadata', function(result) {
-                        Meteor.call('addSong', {
-                            'track': result.track.no,
-                            'title': result.title,
-                            'album': result.album,
-                            'artist': result.artist[0],
-                            'genre': result.genre[0],
-                            'year': result.year,
-                            'mime': file.type,
-                            'timestamp': new Date()
-                        }, function(error, songId) {
-                            if(!error) {
-                                MusicData.insert({
-                                    _id: songId,
-                                    url: URL.createObjectURL(file),
-                                });
-                            }
-                        });
-                    });
-                }(file));
+                MusicManager.addSong(file);
             } catch(e) { /* ignore invalid file */ }
         }
     },
@@ -41,19 +21,9 @@ Template.home.events({
         var song = this;
         var data = MusicData.findOne({ _id: song._id});
         if(!data) {
-            var conn = WebRTC.connect(song.owner, {metadata: {song: song._id}});
-            conn.on('open', function() {
-                conn.on('data', function(data) {
-                    var blob = new Blob([data], {
-                        type: song.mime
-                    });
-                    audio.src = URL.createObjectURL(blob);
-                    audio.play();
-                });
-            });
+            WebRTC.stream(audio, song);
         } else {
             audio.src = data.url;
-            audio.play();
         }
     }
 });
