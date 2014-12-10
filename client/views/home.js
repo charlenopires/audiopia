@@ -19,11 +19,12 @@ Template.home.events({
     },
     'click ul li': function(event, template) {
         var song = this;
-        var data = MusicData.findOne({ _id: song._id});
-        if(!data) {
-            WebRTC.stream(audio, song);
-        } else {
-            audio.src = data.url;
-        }
+        MusicManager.localStorage.getAsDataUrl(song._id, function(dataUrl) {
+            if(!dataUrl) {
+                WebRTC.stream(audio, song);
+            } else {
+                audio.src = dataUrl;
+            }
+        });
     }
 });

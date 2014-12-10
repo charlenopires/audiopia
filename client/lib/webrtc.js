@@ -5,31 +5,24 @@ Hooks.onLoggedIn = function(userId) {
     WebRTC.on('connection', function(conn) {
         var songId = conn.metadata.song;
         conn.on('open', function() {
-            var data = MusicData.findOne({_id: songId});
-            if(!data) {
-            } else {
-                var request = new XMLHttpRequest();
-                request.open('GET', data.url, true);
-                request.responseType = 'blob';
-                request.onload = function(error) {
-                    if(this.status == 200) {
-                        var reader = new FileReader();
-                        reader.onload = (function(e) {
-                            var context = new AudioContext();
-                            context.decodeAudioData(e.target.result, function(buffer) {
-                                var remote = context.createMediaStreamDestination();
-                                var source = context.createBufferSource();
-                                source.buffer = buffer;
-                                source.start(0);
-                                source.connect(remote);
-                                WebRTC.call(conn.peer, remote.stream, {metadata:{song:songId}});
-                            });
+            MusicManager.localStorage.get(songId, function(data) {
+                if(!data) {
+                } else {
+                    var reader = new FileReader();
+                    reader.onload = (function(e) {
+                        var context = new AudioContext();
+                        context.decodeAudioData(e.target.result, function(buffer) {
+                            var remote = context.createMediaStreamDestination();
+                            var source = context.createBufferSource();
+                            source.buffer = buffer;
+                            source.start(0);
+                            source.connect(remote);
+                            WebRTC.call(conn.peer, remote.stream, {metadata:{song:songId}});
                         });
-                        reader.readAsArrayBuffer(this.response);
-                    }
+                    });
+                    reader.readAsArrayBuffer(data);
                 }
-                request.send();
-            }
+            });
         });
     }).on('call', function(call) {
         call.answer(null);

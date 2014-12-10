@@ -1,5 +1,6 @@
 Hooks = {
     init: function() {
+        MusicManager.init();
         Tracker.autorun(function() {
             var userId = Meteor.userId();
             if(!userId && Hooks._loggedIn) {
