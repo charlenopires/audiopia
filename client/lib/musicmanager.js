@@ -1,8 +1,22 @@
 MusicManager = {
     localStorage: null,
 
-    init: function() {
-        this._createPersistantLocalStorage();
+    init: function(options) {
+        var self = this;
+        if(true) {
+            this._createPersistantLocalStorage(function(storage) {
+                storage.retrieveAll(function(objects) {
+                    for(var i in objects) {
+                        self.addSong(objects[i], i);
+                    }
+                });
+                self.localStorage = storage;
+            });
+        } else {
+            this._createTemporaryLocalStorage(function(storage) {
+                self.localStorage = storage;
+            });
+        }
     },
     addSong: function(file, id) {
         var self = this;
@@ -31,7 +45,7 @@ MusicManager = {
             } : null);
         });
     },
-    _createPersistantLocalStorage: function() {
+    _createPersistantLocalStorage: function(callback) {
         var self = this;
         var store = indexedDB.open('audiopia', 1);
         store.onerror = function(event) {
@@ -42,7 +56,7 @@ MusicManager = {
             db.set = function(id, data) {
                 var transaction = this.transaction(['music'], 'readwrite');
                 var objectStore = transaction.objectStore('music');
-                objectStore.put(data, id);
+                objectStore.put(new Blob([data],{type: data.type}), id);
             };
             db.get = function(id, callback) {
                 var transaction = this.transaction(['music']);
@@ -75,17 +89,39 @@ MusicManager = {
                 var objectStore = transaction.objectStore('music');
                 objectStore.clear();
             }
-
-            self.localStorage = db;
-            self.localStorage.retrieveAll(function(objects) {
-                for(var i in objects) {
-                    self.addSong(objects[i], i);
-                }
-            });
+            callback(db);
         };
         store.onupgradeneeded = function (event) {
             var db = event.target.result;
             db.createObjectStore('music');
         };
+    },
+    _createTemporaryLocalStorage: function(callback) {
+        callback({
+            model: new Mongo.Collection(null),
+            set: function(id, data) {
+                this.model.insert({
+                    _id: id,
+                    url: URL.createObjectURL(data),
+                });
+            },
+            get: function(id, callback) {
+                this.getAsDataUrl(id, function(dataUrl) {
+                    var request = new XMLHttpRequest();
+                    request.open('GET', dataUrl, true);
+                    request.responseType = 'blob';
+                    request.onload = function(error) {
+                        if(this.status == 200) {
+                            callback(this.response);
+                        }
+                    }
+                    request.send();
+                });
+            },
+            getAsDataUrl: function(id, callback) {
+                var song = this.model.findOne({_id: id});
+                callback(song ? song.url : undefined);
+            },
+        });
     }
 };
