@@ -1,8 +1,27 @@
 <template name="home">
-    <input type="file" webkitdirectory>
-    <ul>
-        {{#each music}}
-        <li>{{title}} - {{artist}}</li>
-        {{/each}}
-    </ul>
+    <form>
+        <div class="uk-form-file">
+            <button class="uk-button">Add Music</button>
+            <input type="file" webkitdirectory>
+        </div>
+    </form>
+    <table class="uk-table uk-table-striped uk-table-hover">
+        <caption></caption>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Artist</th>
+                <th>Album</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each music}}
+            <tr>
+                <td>{{title}}</td>
+                <td>{{artist}}</td>
+                <td>{{album}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
 </template>

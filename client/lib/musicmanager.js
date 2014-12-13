@@ -3,7 +3,7 @@ MusicManager = {
 
     init: function(options) {
         var self = this;
-        if(true) {
+        if(false) {
             this._createPersistantLocalStorage(function(storage) {
                 storage.retrieveAll(function(objects) {
                     for(var i in objects) {

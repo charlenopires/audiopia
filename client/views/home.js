@@ -17,7 +17,7 @@ Template.home.events({
             } catch(e) { /* ignore invalid file */ }
         }
     },
-    'click ul li': function(event, template) {
+    'click tbody tr': function(event, template) {
         var song = this;
         MusicManager.localStorage.getAsDataUrl(song._id, function(dataUrl) {
             if(!dataUrl) {
