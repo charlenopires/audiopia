@@ -4,8 +4,6 @@
 # but you can also edit it by hand.
 
 meteor-platform
-autopublish
-insecure
 iron:router
 accounts-password
 artwells:accounts-guest
@@ -13,4 +11,3 @@ mizzao:user-status
 mquandalle:bower
 pedrohenriquerls:peerjs
 less
-
