@@ -1,20 +1,11 @@
 var audio = new Audio();
 audio.play();
 
-Template.home.helpers({
-    music: function() {
-        return Music.find();
-    }
-});
-
 Template.home.events({
     'change input[type=file]': function(event, template) {
         var files = event.target.files;
         for(var i in files) {
-            var file = files[i];
-            try {
-                MusicManager.addSong(file);
-            } catch(e) { /* ignore invalid file */ }
+            MusicManager.addSong(files[i]);
         }
     },
     'click tbody tr': function(event, template) {

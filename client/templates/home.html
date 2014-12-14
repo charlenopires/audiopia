@@ -3,23 +3,5 @@
         <button class="uk-button">Add Music</button>
         <input type="file" webkitdirectory>
     </div>
-    <table class="uk-table uk-table-striped uk-table-hover">
-        <caption></caption>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Artist</th>
-                <th>Album</th>
-            </tr>
-        </thead>
-        <tbody>
-            {{#each music}}
-            <tr>
-                <td>{{title}}</td>
-                <td>{{artist}}</td>
-                <td>{{album}}</td>
-            </tr>
-            {{/each}}
-        </tbody>
-    </table>
+    {{> music}}
 </template>

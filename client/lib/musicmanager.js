@@ -3,7 +3,7 @@ MusicManager = {
 
     init: function(options) {
         var self = this;
-        if(false) {
+        if(true) {
             this._createPersistantLocalStorage(function(storage) {
                 storage.retrieveAll(function(objects) {
                     for(var i in objects) {
@@ -18,22 +18,31 @@ MusicManager = {
             });
         }
     },
+    parseFile: function(file, callback) {
+        var self = this;
+        try {
+            var meta = musicmetadata(file); // throws if invalid file
+            meta.on('metadata', function(result) {
+                var song = {
+                    'track': result.track.no,
+                    'title': result.title,
+                    'album': result.album,
+                    'artist': result.artist[0],
+                    'genre': result.genre[0],
+                    'year': result.year,
+                    'mime': file.type,
+                    'timestamp': new Date()
+                };
+                callback(song);
+            });
+        } catch(e) {
+        }
+    },
     addSong: function(file, id) {
         var self = this;
-        var meta = musicmetadata(file); // throws if invalid file
         var store = !id;
-        meta.on('metadata', function(result) {
-            var song = {
-                'track': result.track.no,
-                'title': result.title,
-                'album': result.album,
-                'artist': result.artist[0],
-                'genre': result.genre[0],
-                'year': result.year,
-                'mime': file.type,
-                'timestamp': new Date()
-            };
-            if(!store) {
+        self.parseFile(file, function(song) {
+            if(id) {
                 song = _.extend(song, {
                     '_id': id
                 });
