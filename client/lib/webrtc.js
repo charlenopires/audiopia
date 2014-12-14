@@ -27,9 +27,7 @@ Hooks.onLoggedIn = function(userId) {
     }).on('call', function(call) {
         call.answer(null);
         call.on('stream', function(stream) {
-            var dataUrl = URL.createObjectURL(stream);
-            var player = new Audio(dataUrl);
-            player.play();
+            AudioPlayer.loadFromDataUrl(URL.createObjectURL(stream));
         });
     }).on('error', function(error) {
         console.warn(error);
@@ -39,14 +37,15 @@ Hooks.onLoggedIn = function(userId) {
                 WebRTC.reconnect();
             }, 5000);
         }
-    }).stream = function(audio, song) {
+    }).stream = function(song) {
         var conn = this.connect(song.owner, {metadata: {song: song._id}});
         conn.on('open', function() {
+            AudioPlayer.loadSong(song);
             conn.on('data', function(data) {
                 var blob = new Blob([data], {
                     type: song.mime
                 });
-                audio.src = URL.createObjectURL(blob);
+                AudioPlayer.loadFromDataUrl(URL.createObjectURL(blob));
             });
         });
     };

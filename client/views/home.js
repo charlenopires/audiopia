@@ -1,6 +1,3 @@
-var audio = new Audio();
-audio.play();
-
 Template.home.events({
     'change input[type=file]': function(event, template) {
         var files = event.target.files;
@@ -12,9 +9,9 @@ Template.home.events({
         var song = this;
         MusicManager.localStorage.getAsDataUrl(song._id, function(dataUrl) {
             if(!dataUrl) {
-                WebRTC.stream(audio, song);
+                WebRTC.stream(song);
             } else {
-                audio.src = dataUrl;
+                AudioPlayer.loadFromDataUrl(dataUrl, song);
             }
         });
     }
