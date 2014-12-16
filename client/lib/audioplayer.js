@@ -1,22 +1,25 @@
 AudioPlayer = {
-    _currentSong: null,
     _audioElement: null,
+    _audioContext: null,
 
     init: function(element) {
+        var self = this;
         this._audioElement = element;
         this._audioElement.addEventListener('canplay', function() {
             this.play();
         });
+        this._audioElement.addEventListener('ended', function() {
+        });
         
     },
-    loadSong: function(song) {
-        if(song != undefined) {
-            this._currentSong = song;
+    loadContext: function(context) {
+        if(context != undefined) {
+            this._audioContext = context;
         }
     },
-    loadFromDataUrl: function(dataUrl, song) {
-        this.loadSong(song);
+    loadFromDataUrl: function(dataUrl, context) {
+        this.loadContext(context);
         this._audioElement.src = dataUrl;
         this._audioElement.load();
-    }
+    },
 };

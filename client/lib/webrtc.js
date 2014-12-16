@@ -40,7 +40,7 @@ Hooks.onLoggedIn = function(userId) {
     }).stream = function(song) {
         var conn = this.connect(song.owner, {metadata: {song: song._id}});
         conn.on('open', function() {
-            AudioPlayer.loadSong(song);
+            AudioPlayer.loadContext(song);
             conn.on('data', function(data) {
                 var blob = new Blob([data], {
                     type: song.mime
