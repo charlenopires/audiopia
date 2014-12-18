@@ -1,6 +1,6 @@
 <head>
   <meta charset="utf-8">
-  <title></title>
+  <title>Audiopia</title>
   <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0">
   <meta name="description" content="">
   <meta name="author" content="Mario Flach">
@@ -16,12 +16,12 @@
     <main class="tm-layout">
         <nav class="tm-sidebar">
             <ul class="uk-nav uk-nav-parent-icon" data-uk-nav="{multiple:true}" role="navigation">
-                <li class="uk-active"><a href="#"><i class="uk-icon-dashboard"></i> Dashboard</a></li>
+                <li class="{{isActiveRoute regex='^dashboard$' className='uk-active'}}"><a href="{{pathFor route='dashboard'}}"><i class="uk-icon-dashboard"></i> Dashboard</a></li>
                 <li class="uk-active uk-parent">
                     <a href="#"><i class="uk-icon-music"></i> Music</a>
                     <ul class="uk-nav-sub">
-                        <li><a href="#"><i class="uk-icon-cloud"></i> Online</a></li>
-                        <li><a href="#"><i class="uk-icon-database"></i> Local Storage</a></li>
+                        <li class="{{isActiveRoute regex='^music$' className='uk-active'}}"><a href="{{pathFor route='music'}}"><i class="uk-icon-cloud"></i> Online</a></li>
+                        <li class="{{isActiveRoute regex='^music.local$' className='uk-active'}}"><a href="{{pathFor route='music.local'}}"><i class="uk-icon-download"></i> Local Storage</a></li>
                     </ul>
                 </li>
                 <li class="uk-parent">
@@ -31,6 +31,11 @@
                 <li><a href="#"><i class="uk-icon-users"></i> Community</a></li>
             </ul>
         </nav>
-        <div class="tm-wrapper">{{> yield}}</div>
+        <div class="tm-wrapper">
+            {{> yield}}
+        </div>
     </main>
+    <div style="position:fixed;bottom:0;left:0;right:0">
+        {{> audio}}
+    </div>
 </template>

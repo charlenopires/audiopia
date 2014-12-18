@@ -1,13 +1,18 @@
-Template.music.rendered = function() {
-    var fields = MusicPaginated.table.fields;
-    if(_.isEqual(fields, ['title', 'artist', 'album'])) {
-        var headers = this.findAll('thead th');
-        for(var i in headers) {
-            var className = 'uk-width-1-4';
-            if(fields[i] == 'title') {
-                className = 'uk-width-1-2';
-            }
-            $(headers[i]).addClass(className);
+Template.music.events({
+    'change input[type=file]': function(event, template) {
+        var files = event.target.files;
+        for(var i in files) {
+            MusicManager.addSong(files[i]);
         }
+    },
+    'click tbody tr': function(event, template) {
+        var song = this;
+        MusicManager.localStorage.getAsDataUrl(song._id, function(dataUrl) {
+            if(!dataUrl) {
+                WebRTC.stream(song);
+            } else {
+                AudioPlayer.loadFromDataUrl(dataUrl, song);
+            }
+        });
     }
-};
+});
